@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with PDF using Gemini AI</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #255faa;
+        }
+
+        /* style for paragraph section */
+
+        .intro-container {
+            background-color: #f1f1f1;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+            text-size-adjust: inherit;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: medium;
+        }
+
+        .intro-container:hover {
+            background-color: #5985cc;
+            color: #fff;
+        }
+
+        .dm-container {
+            background-color: #f1f1f1;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: medium;
+            text-align: left;
+        }
+
+        
+        .myq-container {
+                background-color: #f1f1f1;
+                padding: 20px;
+                margin-bottom: 20px;
+                border-radius: 10px;
+                text-align: center;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                transition: background-color 0.3s ease;
+                text-size-adjust: inherit;
+                font-family: 'Times New Roman', Times, serif;
+                font-size: medium;
+                text-align: left;
+            }
+
+
+        .myq-container:hover {
+                background-color: #5985cc;
+                color: #fff;
+            }
+
+        .container {
+            width: 60%;
+            margin: auto;
+            padding: 20px;
+            background-color: rgb(255, 255, 255);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        form {
+            margin-bottom: 30px;
+        }
+
+        input[type="file"] {
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-color: #5c6bc0;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #3f4f8c;
+        }
+
+        .question-section {
+            margin-top: 20px;
+        }
+
+        #user_question {
+            padding: 10px;
+            font-size: 16px;
+            width: 60%;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        #answer {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container background-color: rgb(255,0,255);">
+        <!-- rgb(255,0,255) -->
+        <br />
+        <br />
+        <br />
+        <div class="intro-container">
+            <h1><b>Chat with PDF Using Chatify ! </b></h1>
+            <!-- <h2>Overview:</h2> -->
+            <br> Welcome to Chat with PDF using Chatify! This innovative Generative AI based web application allows you to interact with any
+            uploaded PDF document in a conversational way. With the power of advanced AI, you can ask questions based on
+            the content of the PDF, and the AI will provide detailed answers derived from the document. No more sifting
+            through pages manually – just upload your PDF, ask your question, and let the AI assist you in real-time!
+            </p>
+
+        </div>
+
+        <div class="dm-container">
+            <h3><b>How It Works::</b></h3>
+            <li class="myq-container">Simply upload one or more PDF files through the application. The AI will process the content and prepare it for interaction.</li>
+            <li class="myq-container"> After uploading your PDF, type any question related to the document's content into the text box. For example, “What are the main points of this document?”</li>
+            <li class="myq-container">The AI, powered by Gemini, will analyze the document and respond to your question by providing the most relevant information from the uploaded PDF.</li>
+
+        </div>
+    
+    <div class="container">
+        <h1>Chat with PDF using Chatify AI Application</h1>
+
+        <!-- File upload form -->
+        <form id="uploadForm" enctype="multipart/form-data">
+            <label for="pdf_files">Upload PDF Files:</label>
+            <input type="file" id="pdf_files" name="pdf_files" multiple required>
+            <button type="submit">Submit & Process</button>
+        </form>
+
+        <div class="question-section">
+            <label for="user_question">Ask a Question from the PDF:</label>
+            <input type="text" id="user_question" placeholder="Type your question here" required>
+            <button id="askButton">Ask</button>
+            <div id="answer"></div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Upload PDF files
+        $('#uploadForm').on('submit', function (event) {
+            event.preventDefault();
+            var formData = new FormData(this);
+
+            $.ajax({
+                url: '/upload',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    alert(response.message);
+                },
+                error: function (xhr, status, error) {
+                    alert("Error: " + xhr.responseJSON.error);
+                }
+            });
+        });
+
+        // Ask a question
+        $('#askButton').on('click', function () {
+            var question = $('#user_question').val();
+
+            if (question) {
+                $.ajax({
+                    url: '/ask',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ "question": question }),
+                    success: function (response) {
+                        $('#answer').text("Answer: " + response.answer);
+                    },
+                    error: function (xhr, status, error) {
+                        $('#answer').text("Error: " + xhr.responseJSON.error);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

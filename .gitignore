@@ -136,6 +136,17 @@ ENV/
 env.bak/
 venv.bak/
 
+.mypdf/
+.mypdf
+mypdf/
+
+.faiss_vector_files
+faiss_vector_files/
+.faiss_vector_files/
+
+.env/
+.env
+
 # Spyder project settings
 .spyderproject
 .spyproject
