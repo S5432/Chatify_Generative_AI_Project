@@ -6,4 +6,5 @@ python-dotenv
 PyPDF2
 faiss-cpu
 flask
+gunicorn==22.0.0
 
